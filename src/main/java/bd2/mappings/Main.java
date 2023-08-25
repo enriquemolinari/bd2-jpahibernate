@@ -20,7 +20,7 @@ public class Main {
 		try {
 			tx.begin();
 			Persona p = new Persona(1L, "Enrique", "San Martin 123",
-					LocalDate.now().minusYears(40));
+					LocalDate.now().minusYears(40), new Dni("26548987"));
 
 			Telefono t = new Telefono("234234");
 			p.addTelefono(t);

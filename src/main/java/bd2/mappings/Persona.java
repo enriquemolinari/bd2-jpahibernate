@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -28,13 +29,20 @@ public class Persona {
 	@Embedded
 	private Address direccion;
 
+	// @OneToOne(cascade = CascadeType.PERSIST)
+	// OneToone: pone unique la columna id_dni en la tabla person
+	// many to one: no pone ningun constraint
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	private Dni dni;
+
 	public Persona(Long id, String nombre, String direccion,
-			LocalDate fechaNacimiento) {
+			LocalDate fechaNacimiento, Dni dni) {
 		// validate all !
 		this.id = id;
 		this.nombre = nombre;
 		this.direccion = new Address(direccion);
 		this.fechaNac = fechaNacimiento;
+		this.dni = dni;
 	}
 
 	public void printTelefonos() {
