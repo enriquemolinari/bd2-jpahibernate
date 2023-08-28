@@ -106,4 +106,16 @@ public class Persona {
 	private void setDireccion(Address direccion) {
 		this.direccion = direccion;
 	}
+
+	public boolean seLlama(String unNombre) {
+		return this.nombre.equals(unNombre);
+	}
+
+	public boolean viveEn(String unaDireccion) {
+		return this.direccion.is(unaDireccion);
+	}
+
+	public boolean suTelefonoEs(String unTelefono) {
+		return this.telefonos.stream().anyMatch(t -> t.is(unTelefono));
+	}
 }
