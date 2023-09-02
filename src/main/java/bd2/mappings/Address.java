@@ -1,5 +1,8 @@
 package bd2.mappings;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class Address {
 
 	private String direccion;

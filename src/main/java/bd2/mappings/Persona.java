@@ -30,7 +30,7 @@ public class Persona {
 	private Address direccion;
 
 	// @OneToOne(cascade = CascadeType.PERSIST)
-	// OneToone: pone unique la columna id_dni en la tabla person
+	// OneToone: pone unique la columna id_dni en la tabla persona
 	// many to one: no pone ningun constraint
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Dni dni;
