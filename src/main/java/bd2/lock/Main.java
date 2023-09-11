@@ -10,9 +10,16 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		// 1. select for update
-		// 2. constraints y retrys de la Tx
-		// 3. con MVCC y serializable en PG + retrys de la Tx
+		// 1. select for update (pessimistic)
+		// 2. constraints y retrys de la Tx (optimistic)
+		// 3. con MVCC y serializable en PG + retrys de la Tx (optimistic)
+		// 4. Optimistic vs Pessimistic en long-runnning conversations o
+		// application-level
+		// transaction
+
+		// solo serializable detecta este problema sin usar algun mecanismo de
+		// concurrencia
+		// pesimista o optimista
 
 		EntityManagerFactory emf = Persistence
 				.createEntityManagerFactory("jpa-pgsql");

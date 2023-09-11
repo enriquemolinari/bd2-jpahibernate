@@ -12,12 +12,6 @@ public class MainWithRetries {
 
 	private EntityManagerFactory factory;
 
-	// pg en serializable, no necesito for update, "could not serialize
-	// access due to concurrent update"
-	// SHOW default_transaction_isolation;
-	// ALTER DATABASE postgres SET DEFAULT_TRANSACTION_ISOLATION TO
-	// 'serializable';
-
 	public MainWithRetries() {
 		this.factory = Persistence.createEntityManagerFactory("jpa-pgsql");
 	}

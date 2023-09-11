@@ -1,0 +1,56 @@
+- Optimista con Hiberante en DB Tx y App-level Tx
+- Optimista con retries (pgsql y constraint).
+- Pesimista, con select for update 
+-- revisar la documentacion de la BD, si lockea mas que las filas leidas, no es bueno!!!
+
+Importante en Optimistic Lock:
+
+- Database Tx
+-- Cuando el read y el update/write estan en la misma Tx, el find (read), modificar (algun setter) 
+el objeto luego commit, maneja la concurrencia bien tirando OptimisticLockException.
+
+- Application-level Tx
+-- Tambien conocido como read-change-write behaviour pattern
+-- Con Optimistic Locking se previene, pero haciendo algun de las siguientes salvedades.
+-- Cuando el read esta en una Tx, me lo llevo a un form en la UI, y entonces el update/write 
+   esta en otra Tx, antes de realizar la modificacion en la BD con el cambio (el write) necesito 
+   crear un nueva instancia seteando el id y la version y luego usar em.merge().
+-- O puedo usar el em.find, traer lo que esta en la BD, y comparar las versiones de lo que traje 
+   de la UI/memoria, contra lo que esta en la BD, si no coinciden informo con error.   
+-- Incluso serializable NO puede detectar el last-update-wins en este caso.
+
+Caso Blog Post:
+-- Si me traigo a UI/memoria el Post ID 1 version 1, estoy un rato cambiando el texto y luego intento guardar.
+---- 1. Lectura: Leo de la BD el post ID 1
+---- 2. Comparo: Si tuviera version distinta de 1 entonces --> lanzo exception.
+---- 3. Escribo: Si es la version 1 lo que lei en el paso 1, entonces puedo comitear el cambio. 
+Caso Butaca de Cine:
+-- Traigo a UI/memoria todas las butacas libres de una funcion y luego elijo la butaca 3.
+--- Antes de asignarle la butaca al usuario, primero me fijo si sigue reservada (y aca tengo un 
+    atributo del objeto para usar como la version, entonces puedo usar eso en lugar de la version).
+    Si se reservo, entonces lanzo exception, sino se reservo se la asigo al usuario y la marco reservada.
+
+Para ambos casos, supongamos que la lectura del paso 1 coincide con la version que viene de UI,
+sigo adelante, pero otra Tx me gano y comitio. Ahi cambio la version, con lo cual esta Tx va a 
+fallar por OptimisticLock.
+
+-- Usar em.find y setVersion NO funciona. @Version es una propiedad especial y el contexto no captura ese cambio.
+-- (changing entity version) https://vladmihalcea.com/jpa-entity-version-property-hibernate/
+
+
+- OPTIMISTIC_FORCE_INCREMENT: 
+-- Sirve para cuando queres mantener versionada una entidad padre, incrementando su version,
+al cambiar un hijo.
+  
+Otro tema:
+  
+Si llamo a un setter para modificar algo de un objeto, pero le pongo el mismo valor que tenia, 
+hibernate se da cuenta y no tira un update al commitear la Tx.
+
+
+- Lost updates no sucede si usamos 'repeatable read' o JPA optimistic lock  
+- Phanton read se supone que solo se evita con 'serializable', aunque en PG tampoco sucede con 'repeatable read'
+- Serialization Anomaly, solo se evita con serializable. Tiene que ver con el orden en que se ejecutan las Tx:
+The result of successfully committing a group of transactions is inconsistent with all possible orderings of running those transactions one at a time.
+
+

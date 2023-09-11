@@ -1,0 +1,20 @@
+- Para levantar derby: 
+	cd /home/enrique/software/db-derby-10.16.1.1-bin/bin
+	./startNetworkServer
+- dbvis:
+	cd DbVisualizer
+	./dbvis
+
+postgresql con Docker
+
+docker run --name some-postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+docker start some-postgres
+
+postgres/mysecretpassword
+
+SHOW default_transaction_isolation;
+
+ALTER DATABASE postgres SET DEFAULT_TRANSACTION_ISOLATION TO 'serializable';
+ALTER DATABASE postgres SET DEFAULT_TRANSACTION_ISOLATION TO 'repeatable read';
+ALTER DATABASE postgres SET DEFAULT_TRANSACTION_ISOLATION TO 'read committed';
+-- para ver el cambio en el cliente BD necesito reconectarme.
