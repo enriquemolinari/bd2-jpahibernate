@@ -1,4 +1,4 @@
-package bd2.lock;
+package bd2.lock.optimisticjpa;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -10,10 +10,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		// 1. Con la BD en read committed
-		// 2. con la BD en repeatable read
-		// 3. Con la BD en read committed y lockeo pesismista (select for
-		// update)
+		// 4. Con la BD en read committed y lockeo optimista (version)
 
 		EntityManagerFactory emf = Persistence
 				.createEntityManagerFactory("jpa-pgsql");
@@ -25,14 +22,12 @@ public class Main {
 
 			int anioActual = 2023;
 
-			TypedQuery<NextNumber> query = em.createQuery(
-					"from NextNumber where anio = :anioActual",
-					NextNumber.class);
+			TypedQuery<NextNumber2> query = em.createQuery(
+					"from NextNumber2 where anio = :anioActual",
+					NextNumber2.class);
 			query.setParameter("anioActual", anioActual);
-			// select for update
-			// query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
-			NextNumber l = query.getSingleResult();
+			NextNumber2 l = query.getSingleResult();
 
 			System.out.println(l.recuperarSiguiente());
 
