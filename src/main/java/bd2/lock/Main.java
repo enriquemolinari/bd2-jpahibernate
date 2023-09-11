@@ -29,7 +29,10 @@ public class Main {
 					"from NextNumber where anio = :anioActual",
 					NextNumber.class);
 			query.setParameter("anioActual", anioActual);
+
 			// select for update
+			// https://www.postgresql.org/docs/current/explicit-locking.html
+			// select for key update is a bit weaker than select for update
 			// query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
 			NextNumber l = query.getSingleResult();
