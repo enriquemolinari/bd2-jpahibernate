@@ -7,32 +7,32 @@ import jakarta.persistence.Persistence;
 
 public class MainBidireccional {
 
-	public static void main(String args[]) {
-		EntityManagerFactory emf = Persistence
-				// .createEntityManagerFactory("jpa-objectdb");
-				.createEntityManagerFactory("jpa-derby-client");
-		// .createEntityManagerFactory("jpa-derby-embedded");
-		// .createEntityManagerFactory("jpa-pgsql");
-		EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
+    public static void main(String args[]) {
+        EntityManagerFactory emf = Persistence
+                // .createEntityManagerFactory("jpa-objectdb");
+                .createEntityManagerFactory("jpa-derby-client");
+        // .createEntityManagerFactory("jpa-derby-embedded");
+        // .createEntityManagerFactory("jpa-pgsql");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
 
-		try {
-			tx.begin();
+        try {
+            tx.begin();
 
-			var post = new Post("titulo", "texto...");
-			post.addComment("commentario 1");
-			post.addComment("commentario 2");
+            Post post = new Post("titulo", "texto...");
+            post.addComment("commentario 1");
+            post.addComment("commentario 2");
 
-			em.persist(post);
-			tx.commit();
-		} catch (Exception e) {
-			tx.rollback();
-			throw new RuntimeException(e);
-		} finally {
-			if (em != null && em.isOpen())
-				em.close();
-			if (emf != null)
-				emf.close();
-		}
-	}
+            em.persist(post);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw new RuntimeException(e);
+        } finally {
+            if (em != null && em.isOpen())
+                em.close();
+            if (emf != null)
+                emf.close();
+        }
+    }
 }
