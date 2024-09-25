@@ -15,6 +15,7 @@ public class MainBidireccional {
 		// .createEntityManagerFactory("jpa-pgsql");
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
+
 		try {
 			tx.begin();
 
@@ -23,7 +24,6 @@ public class MainBidireccional {
 			post.addComment("commentario 2");
 
 			em.persist(post);
-
 			tx.commit();
 		} catch (Exception e) {
 			tx.rollback();

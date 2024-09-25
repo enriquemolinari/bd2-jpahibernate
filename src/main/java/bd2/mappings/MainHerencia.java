@@ -18,13 +18,7 @@ public class MainHerencia {
 		try {
 			tx.begin();
 
-			// var ca = new CajaDeAhorro(100);
-			// var cc = new CuentaCorriente(500);
-			//
-			// em.persist(ca);
-			// em.persist(cc);
-
-			var c = em.find(CuentaBancaria.class, 1L);
+			var c = em.find(CuentaBancaria.class, 2L);
 			System.out.println(c);
 
 			tx.commit();

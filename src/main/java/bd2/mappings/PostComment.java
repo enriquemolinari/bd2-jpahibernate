@@ -20,8 +20,9 @@ public class PostComment {
 	protected PostComment() {
 	}
 
-	public PostComment(String comment) {
+	public PostComment(String comment, Post post) {
 		this.comment = comment;
+		this.post = post;
 	}
 
 	private Long getId() {

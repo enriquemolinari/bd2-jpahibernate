@@ -1,54 +1,54 @@
 package bd2.lock;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 
 public class MergeOptimisticThread1 {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		EntityManagerFactory emf = Persistence
-				.createEntityManagerFactory("jpa-derby-client");
+        EntityManagerFactory emf = Persistence
+                .createEntityManagerFactory("jpa-pgsql");
 
-		EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		try {
-			tx.begin();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
 
-			// var post1 = new BlogPost("primer post",
-			// "Este es el post número 1...");
-			//
-			// var post2 = new BlogPost("primer post",
-			// "Este es el post número 1...");
-			//
-			// em.persist(post1);
-			// em.persist(post2);
+            // Este método es el servicio del tercer paso del read-modify-write
+            // siempre llega el id, la version y lo nuevo que fue modificado.
+//            BlogPost p1 = new BlogPost("titulo post", "texto post");
+//            em.persist(p1);
 
-			// var p1 = new BlogPost(1, "primer post cambiado - thread 1",
-			// "cambio", 1);
-			// em.merge(p1);
+            //Opcion 1: creo instancia nueva con la version que viene de la UI
+            // luego merge
+//            BlogPost p1 = new BlogPost(1, "primer post cambiado - thread 1",
+//                    "cambio", 0);
+//            em.merge(p1);
 
-			// comparando manualmente
-			int versionReadInPreviousTx = 25;
-			var p1 = em.find(BlogPost.class, 1L);
-			if (!p1.sameVersion(versionReadInPreviousTx)) {
-				throw new OptimisticLockException();
-			}
-			p1.nuevoTitulo("113");
+            //Opcion 2: comparo versiones o con otro atributo para ver si cambio la instancia
+            //que quiero persistir
+            // comparando manualmente
+            int versionReadInPreviousTx = 0;
 
-			tx.commit();
-		} catch (Exception e) {
-			tx.rollback();
-			throw new RuntimeException(e);
-		} finally {
-			if (em != null && em.isOpen())
-				em.close();
-			if (emf != null)
-				emf.close();
-		}
-	}
+            BlogPost p1 = em.find(BlogPost.class, 1L);
+
+            if (!p1.sameVersion(versionReadInPreviousTx)) {
+                throw new OptimisticLockException();
+            }
+            p1.nuevoTitulo("cambio 200");
+
+            //Recordar: Si hubiera transacciones concurrentes, siempre al leer primero
+            //y luego modificar el mecanismo de JPA Optimista lanzara exception
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw new RuntimeException(e);
+        } finally {
+            if (em != null && em.isOpen())
+                em.close();
+            if (emf != null)
+                emf.close();
+        }
+    }
 
 }

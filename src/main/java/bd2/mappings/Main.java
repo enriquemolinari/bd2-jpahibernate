@@ -19,14 +19,18 @@ public class Main {
 		EntityTransaction tx = em.getTransaction();
 		try {
 			tx.begin();
-			Persona p = new Persona(1L, "Enrique", "San Martin 123",
+			 Persona p = new Persona(1L, "E", "SM 123",
 					LocalDate.now().minusYears(40), new Dni("26548987"));
 
-			Telefono t = new Telefono("234234");
+			// Persona e = em.find(Persona.class, 1L);
+			// e.addTelefono(new Telefono("2323"));
+
+			Telefono t = new Telefono("1111");
 			p.addTelefono(t);
 
+			em.merge(p);
 			// em.persist(t);
-			em.persist(p);
+			// em.persist(p);
 
 			// objectdb soporta entidades sin PK
 			// EntidadSinPK e = new EntidadSinPK();
@@ -98,11 +102,11 @@ public class Main {
 			// em.persist(e);
 
 			tx.commit();
-			em.clear();
-
-			Persona e = em.find(Persona.class, 1L);
-			System.out.println(e.getNombre());
-			e.printTelefonos();
+			// em.clear();
+			//
+			// Persona e = em.find(Persona.class, 1L);
+			// System.out.println(e.getNombre());
+			// e.printTelefonos();
 
 		} catch (Exception e) {
 			tx.rollback();

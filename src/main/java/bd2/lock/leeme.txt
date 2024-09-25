@@ -47,10 +47,27 @@ Otro tema:
 Si llamo a un setter para modificar algo de un objeto, pero le pongo el mismo valor que tenia, 
 hibernate se da cuenta y no tira un update al commitear la Tx.
 
-
 - Lost updates no sucede si usamos 'repeatable read' o JPA optimistic lock  
 - Phanton read se supone que solo se evita con 'serializable', aunque en PG tampoco sucede con 'repeatable read'
 - Serialization Anomaly, solo se evita con serializable. Tiene que ver con el orden en que se ejecutan las Tx:
 The result of successfully committing a group of transactions is inconsistent with all possible orderings of running those transactions one at a time.
 
+- Libro: Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems
 
+Errors will inevitably happen, but many software developers prefer to think only
+about the happy path rather than the intricacies of error handling. For example, pop‐
+ular object-relational mapping (ORM) frameworks such as Rails’s ActiveRecord and
+Django don’t retry aborted transactions—the error usually results in an exception
+bubbling up the stack, so any user input is thrown away and the user gets an error
+message. This is a shame, because the whole point of aborts is to enable safe retries
+
+Although retrying an aborted transaction is a simple and effective error handling
+mechanism, it isn’t perfect:
+• If the transaction actually succeeded, but the network failed while the server tried
+to acknowledge the successful commit to the client (so the client thinks it failed),
+then retrying the transaction causes it to be performed twice—unless you have an
+additional application-level deduplication mechanism in place.
+--> Si tengo la restriccion de unicidad por mas que haga el retry siempre estaria salvado a que no se dupliquen las cosas.
+
+Concurrency bugs are hard to find by testing, because such bugs are only triggered when you get unlucky
+with the timing. Such timing issues might occur very rarely, and are usually difficult to reproduce

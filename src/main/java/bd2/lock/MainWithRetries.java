@@ -2,11 +2,7 @@ package bd2.lock;
 
 import java.util.function.Function;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 
 public class MainWithRetries {
 
@@ -17,11 +13,11 @@ public class MainWithRetries {
 	}
 
 	public static void main(String[] args) {
-		var m = new MainWithRetries();
+		MainWithRetries m = new MainWithRetries();
 
 		m.retriesOnConflict((em) -> {
-			int anioActual = 2023;
-			var query = em.createQuery(
+			int anioActual = 2024;
+			TypedQuery<NextNumber> query = em.createQuery(
 					"from NextNumber where anio = :anioActual",
 					NextNumber.class);
 			query.setParameter("anioActual", anioActual);

@@ -17,8 +17,8 @@ public class Post {
 	private Long id;
 	private String texto;
 	private String titulo;
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-	// @OneToMany(cascade = CascadeType.ALL)
+//	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<PostComment> comentarios;
 
 	protected Post() {
@@ -35,7 +35,7 @@ public class Post {
 	}
 
 	public void addComment(String comment) {
-		this.comentarios.add(new PostComment(comment));
+		this.comentarios.add(new PostComment(comment, this));
 	}
 
 	private Long getId() {

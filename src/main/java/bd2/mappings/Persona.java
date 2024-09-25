@@ -20,7 +20,7 @@ public class Persona {
 	private Long id;
 	private String nombre;
 
-	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_persona")
 	private List<Telefono> telefonos = new ArrayList<>();
 
